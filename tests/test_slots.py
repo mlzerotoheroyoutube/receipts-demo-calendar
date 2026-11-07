@@ -36,6 +36,13 @@ def test_fmt_duration():
     assert fmt_duration(45) == "0h 45m"
 
 
+def test_fmt_duration_days():
+    assert fmt_duration(1439) == "23h 59m"
+    assert fmt_duration(1440) == "1d 0h 00m"
+    assert fmt_duration(1500) == "1d 1h 00m"
+    assert fmt_duration(3005) == "2d 2h 05m"
+
+
 def test_event_needs_positive_length():
     with pytest.raises(ValueError):
         Event(600, 600)
