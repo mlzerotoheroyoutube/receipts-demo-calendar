@@ -45,7 +45,7 @@ def parse_time(text: str) -> int:
 
 def overlaps(a: Event, b: Event) -> bool:
     """True if the two events share at least one minute."""
-    return a.start <= b.end and b.start <= a.end
+    return a.start < b.end and b.start < a.end
 
 
 def free_slots(events: list[Event], day_start: int, day_end: int, min_minutes: int = 1) -> list[tuple[int, int]]:
