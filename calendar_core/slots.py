@@ -14,6 +14,7 @@ Rules (the contract every change must keep):
 * parse_time turns "HH:MM" (24-hour) into minutes. Anything it cannot parse
   raises ValueError.
 * fmt_duration(minutes) renders "Xh YYm" (e.g. 65 -> "1h 05m", 45 -> "0h 45m").
+  For minutes >= 1440 it renders "<D>d <H>h <MM>m" (e.g. 1500 -> "1d 1h 00m").
 """
 
 from __future__ import annotations
@@ -62,5 +63,9 @@ def free_slots(events: list[Event], day_start: int, day_end: int, min_minutes: i
 
 
 def fmt_duration(minutes: int) -> str:
-    """Render minutes as "Xh YYm"."""
+    """Render minutes as "Xh YYm", or "<D>d <H>h <MM>m" for a day or more."""
+    if minutes >= MINUTES_PER_DAY:
+        days, remainder = divmod(minutes, MINUTES_PER_DAY)
+        hours, mins = divmod(remainder, 60)
+        return f"{days}d {hours}h {mins:02d}m"
     return f"{minutes // 60}h {minutes % 60:02d}m"
