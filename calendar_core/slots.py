@@ -50,12 +50,22 @@ def overlaps(a: Event, b: Event) -> bool:
 
 def free_slots(events: list[Event], day_start: int, day_end: int, min_minutes: int = 1) -> list[tuple[int, int]]:
     """Gaps of at least min_minutes inside [day_start, day_end) not covered by any event."""
+    if day_end <= day_start:
+        return []
+    clipped = []
+    for ev in events:
+        start = max(ev.start, day_start)
+        end = min(ev.end, day_end)
+        if start < end:
+            clipped.append((start, end))
+    clipped.sort()
     slots = []
     cursor = day_start
-    for ev in events:
-        if ev.start > cursor:
-            slots.append((cursor, ev.start))
-        cursor = ev.end
+    for start, end in clipped:
+        if start > cursor:
+            slots.append((cursor, start))
+        if end > cursor:
+            cursor = end
     if cursor < day_end:
         slots.append((cursor, day_end))
     return [(s, e) for s, e in slots if e - s >= min_minutes]
